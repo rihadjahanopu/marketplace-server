@@ -1,5 +1,16 @@
 # Marketplace Server
 
+<div align="center">
+  <h3>
+    <a href="https://your-api-live-link.com/api/health">
+      🌐 View Live API (Health Check)
+    </a>
+  </h3>
+  <p>The robust and secure backend powering the modern Marketplace application.</p>
+</div>
+
+---
+
 ## 🚀 Overview
 This is the robust backend API for the Marketplace application. It provides essential services like user authentication, product management, and media uploading. The server is built with Express and TypeScript, utilizing MongoDB for data persistence and Cloudinary for asset management.
 
@@ -31,6 +42,22 @@ This is the robust backend API for the Marketplace application. It provides esse
 - **Headers**: Helmet is used to secure HTTP headers automatically.
 - **Validation**: All incoming requests on critical routes are validated using `express-validator` to prevent injection and malformed data errors.
 
+## 📁 Folder Structure
+```text
+marketplace-server/
+├── src/                    # Source code
+│   ├── controllers/        # Core business logic handling the request/response cycle
+│   ├── middleware/         # Custom Express middleware (e.g., authentication, Multer file uploads, error handling)
+│   ├── models/             # Mongoose schemas defining the structure of database documents (User, Item)
+│   ├── routes/             # Express route definitions connecting URLs to controllers
+│   ├── utils/              # Helper functions, database connection logic, and third-party configuration (Cloudinary)
+│   └── server.ts           # The main entry point that configures Express and mounts routes
+├── dist/                   # Compiled JavaScript files (generated after build)
+├── .env                    # Environment variables (secrets, DB URI, ports)
+├── package.json            # Dependencies and scripts
+└── tsconfig.json           # TypeScript compiler configuration
+```
+
 ## 📦 Installation & Setup
 
 1. **Install dependencies:**
@@ -54,14 +81,6 @@ This is the robust backend API for the Marketplace application. It provides esse
    npm run dev
    ```
    The API will be available at `http://localhost:5000` and automatically reloads on file changes using `tsx`.
-
-## 📁 Project Structure
-- `src/controllers/`: Core business logic handling the request/response cycle.
-- `src/models/`: Mongoose schemas defining the structure of database documents.
-- `src/routes/`: Express route definitions connecting URLs to controllers.
-- `src/middleware/`: Custom Express middleware (e.g., authentication checks, error handling, Multer file uploads).
-- `src/utils/`: Helper functions, database connection logic, and third-party configuration (Cloudinary).
-- `src/server.ts`: The main entry point that configures Express and mounts routes.
 
 ## 📜 Available Scripts
 - `npm run dev`: Starts the development server with hot-reloading (`tsx watch`).

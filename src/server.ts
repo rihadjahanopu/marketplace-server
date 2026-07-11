@@ -21,23 +21,22 @@ app.use(
 		credentials: true,
 	})
 );
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true }));
-app.use(morgan("dev"));
-
-
-app.get("/api/health", (_req, res) => {
-	res.status(200).json({ success: true, message: "Server is running" });
-});
-
-// Attach auth dynamically to wait for DB connection
-app.use("/api/auth", async (req, res, next) => {
+// Better Auth handler MUST be mounted before express.json()
+app.all("/api/auth/*", async (req, res, next) => {
 	try {
 		const auth = await initAuth();
 		return toNodeHandler(auth)(req, res);
 	} catch (err) {
 		next(err);
 	}
+});
+
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan("dev"));
+
+app.get("/api/health", (_req, res) => {
+	res.status(200).json({ success: true, message: "Server is running" });
 });
 
 app.use("/api", authRoutes); // mounts /me at /api/me

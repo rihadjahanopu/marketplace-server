@@ -17,7 +17,18 @@ const app = express();
 app.use(helmet());
 app.use(
 	cors({
-		origin: config.FRONTEND_URL,
+		origin: (origin, callback) => {
+			const allowed = [
+				config.FRONTEND_URL,
+				"http://localhost:3000",
+				"http://localhost:3001",
+			].filter(Boolean);
+			if (!origin || allowed.includes(origin)) {
+				callback(null, true);
+			} else {
+				callback(new Error(`CORS: origin ${origin} not allowed`));
+			}
+		},
 		credentials: true,
 	})
 );

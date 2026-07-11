@@ -18,7 +18,7 @@ async function resolveUser(createdBy: any) {
 			} catch { /* not a valid ObjectId, skip */ }
 		}
 		if (!user) return null;
-		return { _id: user._id?.toString(), name: user.name, email: user.email, createdAt: user.createdAt };
+		return { _id: user._id?.toString(), name: user.name, email: user.email, image: user.image, createdAt: user.createdAt };
 	} catch {
 		return null;
 	}
@@ -290,9 +290,16 @@ export const addReview = asyncHandler(
 
 export const getReviews = asyncHandler(
 	async (req: Request, res: Response): Promise<void> => {
-		const reviews = await Review.find({ item: req.params.id })
+		const rawReviews = await Review.find({ item: req.params.id })
 			.sort({ createdAt: -1 })
-			.populate("user", "name");
+			.lean();
+
+		const reviews = await Promise.all(
+			rawReviews.map(async (review: any) => {
+				const user = await resolveUser(review.user);
+				return { ...review, user };
+			})
+		);
 
 		res.status(200).json({
 			success: true,

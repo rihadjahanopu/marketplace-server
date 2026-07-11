@@ -49,6 +49,12 @@ export const initAuth = async () => {
 			}),
 		],
 		trustedOrigins: [config.FRONTEND_URL, config.BETTER_AUTH_URL],
+		advanced: {
+			defaultCookieAttributes: {
+				sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+				secure: process.env.NODE_ENV === "production",
+			},
+		},
 	});
 
 	return authInstance;

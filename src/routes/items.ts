@@ -7,6 +7,9 @@ import {
 	getItems,
 	getMyItems,
 	getStats,
+	updateItem,
+	addReview,
+	getReviews,
 } from "../controllers/itemController.js";
 import { authMiddleware } from "../middleware/auth.js";
 
@@ -18,6 +21,11 @@ router.get("/my-items", authMiddleware, getMyItems);
 router.get("/", getItems);
 router.get("/:id", getItemById);
 router.post("/", authMiddleware, createItem);
+router.put("/:id", authMiddleware, updateItem);
 router.delete("/:id", authMiddleware, deleteItem);
+
+// Reviews
+router.post("/:id/reviews", authMiddleware, addReview);
+router.get("/:id/reviews", getReviews);
 
 export default router;

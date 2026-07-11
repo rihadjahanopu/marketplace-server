@@ -1,6 +1,28 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 import { asyncHandler } from "../middleware/errorHandler.js";
 import { Item } from "../models/Item.js";
+import { Review } from "../models/Review.js";
+
+// Helper: resolve seller from Better Auth's 'user' collection by raw string/ObjectId
+async function resolveUser(createdBy: any) {
+	if (!createdBy) return null;
+	try {
+		const db = mongoose.connection.db!;
+		const id = createdBy.toString();
+		// Try matching as string _id first, then as ObjectId
+		let user = await db.collection('user').findOne({ _id: id as any });
+		if (!user) {
+			try {
+				user = await db.collection('user').findOne({ _id: new mongoose.Types.ObjectId(id) });
+			} catch { /* not a valid ObjectId, skip */ }
+		}
+		if (!user) return null;
+		return { _id: user._id?.toString(), name: user.name, email: user.email, createdAt: user.createdAt };
+	} catch {
+		return null;
+	}
+}
 
 export const getItems = asyncHandler(
 	async (req: Request, res: Response): Promise<void> => {
@@ -67,17 +89,16 @@ export const getItems = asyncHandler(
 
 export const getItemById = asyncHandler(
 	async (req: Request, res: Response): Promise<void> => {
-		const item = await Item.findById(req.params.id).populate(
-			"createdBy",
-			"name email createdAt"
-		);
+		const item = await Item.findById(req.params.id).lean();
 
 		if (!item) {
 			res.status(404).json({ success: false, message: "Item not found" });
 			return;
 		}
 
-		res.status(200).json({ success: true, item });
+		const seller = await resolveUser((item as any).createdBy);
+
+		res.status(200).json({ success: true, item: { ...item, createdBy: seller } });
 	}
 );
 
@@ -187,6 +208,95 @@ export const getStats = asyncHandler(
 				categoryStats,
 				monthlyStats,
 			},
+		});
+	}
+);
+
+export const updateItem = asyncHandler(
+	async (req: Request, res: Response): Promise<void> => {
+		let item = await Item.findById(req.params.id);
+
+		if (!item) {
+			res.status(404).json({ success: false, message: "Item not found" });
+			return;
+		}
+
+		// Ensure user is the creator of the item
+		if (item.createdBy.toString() !== req.user!.id) {
+			res.status(401).json({ success: false, message: "Not authorized to update this item" });
+			return;
+		}
+
+		item = await Item.findByIdAndUpdate(
+			req.params.id,
+			{ $set: req.body },
+			{ new: true, runValidators: true }
+		).populate("createdBy", "name email");
+
+		res.status(200).json({
+			success: true,
+			message: "Item updated successfully",
+			item,
+		});
+	}
+);
+
+export const addReview = asyncHandler(
+	async (req: Request, res: Response): Promise<void> => {
+		const { rating, comment } = req.body;
+		const itemId = req.params.id;
+		const userId = req.user!.id;
+
+		const item = await Item.findById(itemId);
+
+		if (!item) {
+			res.status(404).json({ success: false, message: "Item not found" });
+			return;
+		}
+
+		// Check if user already submitted a review
+		const existingReview = await Review.findOne({ item: itemId, user: userId });
+		if (existingReview) {
+			res.status(400).json({ success: false, message: "You have already reviewed this item" });
+			return;
+		}
+
+		const review = await Review.create({
+			item: itemId,
+			user: userId,
+			rating,
+			comment,
+		});
+
+		// Update item's rating and review count
+		const reviews = await Review.find({ item: itemId });
+		const numReviews = reviews.length;
+		const avgRating =
+			reviews.reduce((acc, item) => item.rating + acc, 0) / numReviews;
+
+		item.rating = avgRating;
+		item.reviewCount = numReviews;
+		await item.save();
+
+		await review.populate("user", "name");
+
+		res.status(201).json({
+			success: true,
+			message: "Review added successfully",
+			review,
+		});
+	}
+);
+
+export const getReviews = asyncHandler(
+	async (req: Request, res: Response): Promise<void> => {
+		const reviews = await Review.find({ item: req.params.id })
+			.sort({ createdAt: -1 })
+			.populate("user", "name");
+
+		res.status(200).json({
+			success: true,
+			reviews,
 		});
 	}
 );

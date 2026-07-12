@@ -44,6 +44,9 @@ export const initAuth = async () => {
 		],
 		trustedOrigins: [config.FRONTEND_URL, config.BETTER_AUTH_URL],
 		advanced: {
+			crossSubDomainCookies: {
+				enabled: true,
+			},
 			defaultCookieAttributes: {
 				sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
 				secure: process.env.NODE_ENV === "production",

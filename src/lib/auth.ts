@@ -32,13 +32,7 @@ export const initAuth = async () => {
 			enabled: true,
 			minPasswordLength: 6,
 		},
-		socialProviders: {
-			google: {
-				clientId: process.env.GOOGLE_CLIENT_ID || "placeholder_client_id",
-				clientSecret: process.env.GOOGLE_CLIENT_SECRET || "placeholder_client_secret",
-				redirectURI: process.env.GOOGLE_CALLBACK_URL,
-			},
-		},
+
 		plugins: [
 			bearer(),
 		],

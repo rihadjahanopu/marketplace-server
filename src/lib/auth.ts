@@ -1,7 +1,6 @@
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 import { betterAuth } from "better-auth";
 import { bearer } from "better-auth/plugins";
-import { passkey } from "@better-auth/passkey";
 import mongoose from "mongoose";
 import { config } from "../utils/config.js";
 
@@ -42,11 +41,6 @@ export const initAuth = async () => {
 		},
 		plugins: [
 			bearer(),
-			passkey({
-				rpName: "Marketplace",
-				rpID: new URL(config.FRONTEND_URL).hostname, // e.g. "localhost"
-				origin: config.FRONTEND_URL, // e.g. "http://localhost:3000"
-			}),
 		],
 		trustedOrigins: [config.FRONTEND_URL, config.BETTER_AUTH_URL],
 		advanced: {

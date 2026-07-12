@@ -10,7 +10,6 @@
 		"dev": "tsx watch src/server.ts"
 	},
 	"dependencies": {
-		"@better-auth/passkey": "^1.6.23",
 		"bcryptjs": "^2.4.3",
 		"better-auth": "^1.6.23",
 		"cloudinary": "^2.10.0",

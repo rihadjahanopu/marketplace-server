@@ -2,7 +2,7 @@
 
 <div align="center">
   <h3>
-    <a href="https://your-api-live-link.com/api/health">
+    <a href="https://marketplace-server-rosy.vercel.app/">
       🌐 View Live API (Health Check)
     </a>
   </h3>
@@ -12,9 +12,11 @@
 ---
 
 ## 🚀 Overview
+
 This is the robust backend API for the Marketplace application. It provides essential services like user authentication, product management, and media uploading. The server is built with Express and TypeScript, utilizing MongoDB for data persistence and Cloudinary for asset management.
 
 ## 🛠️ Technology Stack
+
 - **Runtime:** Node.js
 - **Framework:** Express.js
 - **Language:** TypeScript
@@ -25,10 +27,12 @@ This is the robust backend API for the Marketplace application. It provides esse
 - **Validation:** Express Validator
 
 ## 🔑 Database Models
+
 - **`User`**: Stores user authentication credentials, roles (admin/user), and profile metadata.
 - **`Item`**: Represents marketplace listings. Includes fields for title, description, price, condition, uploaded image URLs, and a reference to the seller (`User` model).
 
 ## 📡 API Endpoints Overview
+
 - **`/api/auth/*`**: Handled by Better Auth. Manages sign-up, sign-in, sign-out, session validation, and OAuth integrations.
 - **`/api/me`**: Retrieves the currently authenticated user's profile information.
 - **`/api/items`**: RESTful endpoints to create, read, update, and delete marketplace items. Includes search and filtering parameters.
@@ -37,12 +41,14 @@ This is the robust backend API for the Marketplace application. It provides esse
 - **`/api/health`**: Simple health check endpoint.
 
 ## 🛡️ Security & Performance
+
 - **Authentication**: Stateless, secure sessions managed via Better Auth.
 - **Payload Limits**: JSON body parsing is restricted to `10mb` to prevent payload abuse.
 - **Headers**: Helmet is used to secure HTTP headers automatically.
 - **Validation**: All incoming requests on critical routes are validated using `express-validator` to prevent injection and malformed data errors.
 
 ## 📁 Folder Structure
+
 ```text
 marketplace-server/
 ├── src/                    # Source code
@@ -61,15 +67,18 @@ marketplace-server/
 ## 📦 Installation & Setup
 
 1. **Install dependencies:**
+
    ```bash
    npm install
    ```
 
 2. **Environment Variables:**
    Copy the example environment file:
+
    ```bash
    cp .env.example .env
    ```
+
    **Required Variables:**
    - `PORT`: Server port (e.g., 5000)
    - `MONGODB_URI`: MongoDB connection string
@@ -83,6 +92,7 @@ marketplace-server/
    The API will be available at `http://localhost:5000` and automatically reloads on file changes using `tsx`.
 
 ## 📜 Available Scripts
+
 - `npm run dev`: Starts the development server with hot-reloading (`tsx watch`).
 - `npm run build`: Compiles the TypeScript source code into JavaScript in the `dist` directory.
 - `npm run start`: Starts the production server using the compiled files.

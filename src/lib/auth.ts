@@ -35,6 +35,7 @@ export const initAuth = async () => {
 			google: {
 				clientId: config.GOOGLE_CLIENT_ID,
 				clientSecret: config.GOOGLE_CLIENT_SECRET,
+				redirectURI: `${config.FRONTEND_URL}/api/auth/callback/google`,
 			}
 		},
 		plugins: [],

@@ -15,7 +15,7 @@ export const initAuth = async () => {
 	}
 
 	authInstance = betterAuth({
-		baseURL: config.BETTER_AUTH_URL,
+		baseURL: config.FRONTEND_URL,
 		secret: config.BETTER_AUTH_SECRET,
 		database: mongodbAdapter(mongoose.connection.db, { transaction: false }),
 		user: {

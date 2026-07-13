@@ -46,6 +46,10 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
+app.get(["/", "/api"], (_req, res) => {
+	res.status(200).json({ success: true, message: "Welcome to the Marketplace API" });
+});
+
 app.get("/api/health", (_req, res) => {
 	res.status(200).json({ success: true, message: "Server is running" });
 });

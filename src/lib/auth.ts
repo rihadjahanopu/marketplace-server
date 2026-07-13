@@ -1,6 +1,5 @@
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 import { betterAuth } from "better-auth";
-import { bearer } from "better-auth/plugins";
 import mongoose from "mongoose";
 import { config } from "../utils/config.js";
 
@@ -38,9 +37,7 @@ export const initAuth = async () => {
 				clientSecret: config.GOOGLE_CLIENT_SECRET,
 			}
 		},
-		plugins: [
-			bearer(),
-		],
+		plugins: [],
 		trustedOrigins: [config.FRONTEND_URL, config.BETTER_AUTH_URL],
 		advanced: {
 			crossSubDomainCookies: {
